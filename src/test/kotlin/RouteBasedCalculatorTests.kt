@@ -48,18 +48,10 @@ class RouteBasedCalculatorTests {
                 .addDirection("UAHUSD", "privat24")
                 .build()
 
-        val uahbtcRoute = CurrencyRouteBuilder()
-                .addPoints("UAH", "BTC")
-                .addDirection("UAHUSD", "privat24")
-                .addDirection("USDTUSD", "static")
-                .addDirection("BTCUSDT", "binance")
-                .build()
-
         val calculator = AnyCurrencyCalculatorBuilder()
                 .type(CalculatorType.ROUTE_BASED)
                 .providers(listOf(usdtusdProvider, privat24Provider, binanceProvider))
                 .addRoute(btcuahRoute)
-                .addRoute(uahbtcRoute)
                 .build()
 
         Assert.assertTrue(BigDecimal.valueOf(256819.3974450).compareTo(calculator.rate(BigDecimal.valueOf(1), "BTC", "UAH")) == 0)
