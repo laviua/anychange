@@ -1,10 +1,10 @@
 package stub
 
-import ua.com.lavi.anychange.provider.CurrencyProvider
+import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import ua.com.lavi.anychange.model.PairRate
 import java.math.BigDecimal
 
-class FakePrivat24CurrencyProvider : CurrencyProvider {
+class FakePrivat24CurrencyProvider : AnyCurrencyProvider {
 
     private val pairs = hashMapOf<String, PairRate>()
 
@@ -22,7 +22,7 @@ class FakePrivat24CurrencyProvider : CurrencyProvider {
         return pairs
     }
 
-    override fun providerKey(): String {
+    override fun key(): String {
         return "privat24"
     }
 }

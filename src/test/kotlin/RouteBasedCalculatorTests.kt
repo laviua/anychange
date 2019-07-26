@@ -2,8 +2,8 @@ import org.junit.Assert
 import org.junit.Test
 import stub.FakeBinanceCurrencyProvider
 import stub.FakePrivat24CurrencyProvider
-import stub.USDTUSDCurrencyProvider
-import ua.com.lavi.anychange.CurrencyCalculatorBuilder
+import stub.StaticCurrencyProvider
+import ua.com.lavi.anychange.AnyCurrencyCalculatorBuilder
 import ua.com.lavi.anychange.model.CalculatorType
 import ua.com.lavi.anychange.model.CurrencyRouteBuilder
 import java.math.BigDecimal
@@ -12,7 +12,7 @@ import java.math.RoundingMode
 class RouteBasedCalculatorTests {
 
     private val binanceProvider = FakeBinanceCurrencyProvider()
-    private val usdtusdProvider = USDTUSDCurrencyProvider()
+    private val usdtusdProvider = StaticCurrencyProvider()
     private val privat24Provider = FakePrivat24CurrencyProvider()
 
     @Test
@@ -24,7 +24,7 @@ class RouteBasedCalculatorTests {
                 .addDirection("UAHUSD", "privat24")
                 .build()
 
-        val calculator = CurrencyCalculatorBuilder()
+        val calculator = AnyCurrencyCalculatorBuilder()
                 .type(CalculatorType.ROUTE_BASED)
                 .addRoute(uahusdsimpleRoute)
                 .addProvider(privat24Provider)
@@ -41,24 +41,30 @@ class RouteBasedCalculatorTests {
     @Test
     fun should_cross_routes() {
 
-        val uahBtcRoute = CurrencyRouteBuilder()
+        val btcuahRoute = CurrencyRouteBuilder()
                 .addPoints("BTC", "UAH")
                 .addDirection("BTCUSDT", "binance")
-                .addDirection("USDTUSD", "usdtusd")
+                .addDirection("USDTUSD", "static")
                 .addDirection("UAHUSD", "privat24")
                 .build()
 
-        val calculator = CurrencyCalculatorBuilder()
+        val uahbtcRoute = CurrencyRouteBuilder()
+                .addPoints("UAH", "BTC")
+                .addDirection("UAHUSD", "privat24")
+                .addDirection("USDTUSD", "static")
+                .addDirection("BTCUSDT", "binance")
+                .build()
+
+        val calculator = AnyCurrencyCalculatorBuilder()
                 .type(CalculatorType.ROUTE_BASED)
-                .addProvider(usdtusdProvider)
-                .addProvider(privat24Provider)
-                .addProvider(binanceProvider)
-                .addRoute(uahBtcRoute)
+                .providers(listOf(usdtusdProvider, privat24Provider, binanceProvider))
+                .addRoute(btcuahRoute)
+                .addRoute(uahbtcRoute)
                 .build()
 
         Assert.assertTrue(BigDecimal.valueOf(256819.3974450).compareTo(calculator.rate(BigDecimal.valueOf(1), "BTC", "UAH")) == 0)
         Assert.assertTrue(BigDecimal.valueOf(2568193.974450).compareTo(calculator.rate(BigDecimal.valueOf(10), "BTC", "UAH")) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(0.0003).compareTo(calculator.rate(BigDecimal.valueOf(1), "UAH", "BTC")) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(0.003).compareTo(calculator.rate(BigDecimal.valueOf(1), "UAH", "BTC")) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(0.00000385).compareTo(calculator.rate(BigDecimal.valueOf(1), "UAH", "BTC").setScale(8, RoundingMode.HALF_EVEN)) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(0.0000385).compareTo(calculator.rate(BigDecimal.valueOf(10), "UAH", "BTC").setScale(8, RoundingMode.HALF_EVEN)) == 0)
     }
 }

@@ -2,7 +2,7 @@ package ua.com.lavi.anychange
 
 import java.math.BigDecimal
 
-interface CurrencyCalculator {
+interface AnyCurrencyCalculator {
 
     /**
      * Find rate according to calculator implementation

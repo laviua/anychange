@@ -1,10 +1,10 @@
 package stub
 
-import ua.com.lavi.anychange.provider.CurrencyProvider
+import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import ua.com.lavi.anychange.model.PairRate
 import java.math.BigDecimal
 
-class FakeBinanceCurrencyProvider : CurrencyProvider {
+class FakeBinanceCurrencyProvider : AnyCurrencyProvider {
 
     private val pairs = hashMapOf<String, PairRate>()
 
@@ -14,7 +14,7 @@ class FakeBinanceCurrencyProvider : CurrencyProvider {
         pairs["ETHBTC"] = PairRate("ETH", "BTC", BigDecimal.valueOf(0.02197800), BigDecimal.valueOf(0.02198400))
     }
 
-    override fun providerKey(): String {
+    override fun key(): String {
         return "binance"
     }
 

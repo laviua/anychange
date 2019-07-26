@@ -6,11 +6,11 @@ import ua.com.lavi.anychange.exception.UnknownCalculatorTypeException
 import ua.com.lavi.anychange.exception.UnsupportedCalculatorTypeException
 import ua.com.lavi.anychange.model.CalculatorType
 import ua.com.lavi.anychange.model.CurrencyRoute
-import ua.com.lavi.anychange.provider.CurrencyProvider
+import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 
-class CurrencyCalculatorBuilder {
+class AnyCurrencyCalculatorBuilder {
 
-    private val providers = hashMapOf<String, CurrencyProvider>()
+    private val providers = hashMapOf<String, AnyCurrencyProvider>()
     private val routes = arrayListOf<CurrencyRoute>()
     private var calculatorType: CalculatorType? = null
 
@@ -34,17 +34,24 @@ class CurrencyCalculatorBuilder {
         }
     }
 
-    fun addProvider(provider: CurrencyProvider): CurrencyCalculatorBuilder {
-        providers[provider.providerKey()] = provider
+    fun addProvider(provider: AnyCurrencyProvider): AnyCurrencyCalculatorBuilder {
+        this.providers[provider.key()] = provider
         return this
     }
 
-    fun addRoute(route: CurrencyRoute): CurrencyCalculatorBuilder {
-        routes.add(route)
+    fun providers(providers: List<AnyCurrencyProvider>): AnyCurrencyCalculatorBuilder {
+        for (provider in providers) {
+            this.providers[provider.key()] = provider
+        }
         return this
     }
 
-    fun type(calculatorType: CalculatorType): CurrencyCalculatorBuilder {
+    fun addRoute(route: CurrencyRoute): AnyCurrencyCalculatorBuilder {
+        this.routes.add(route)
+        return this
+    }
+
+    fun type(calculatorType: CalculatorType): AnyCurrencyCalculatorBuilder {
         this.calculatorType = calculatorType
         return this
     }

@@ -5,12 +5,12 @@ import org.slf4j.LoggerFactory
 import ua.com.lavi.anychange.exception.UnsupportedConversionException
 import ua.com.lavi.anychange.model.CurrencyRoute
 import ua.com.lavi.anychange.model.PairRate
-import ua.com.lavi.anychange.provider.CurrencyProvider
+import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class RouteBasedCurrencyCalculator(private val providers: Map<String, CurrencyProvider>,
-                                   private val routes: List<CurrencyRoute>) : CurrencyCalculator {
+class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrencyProvider>,
+                                   private val routes: List<CurrencyRoute>) : AnyCurrencyCalculator {
 
     private val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
@@ -20,6 +20,8 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, CurrencyPr
             log.trace("Exchange: $amount $fromCurrency > $toCurrency")
         }
         val route = matchRoute(fromCurrency, toCurrency)
+        val forwardRoute = route.baseAsset == fromCurrency
+
         if (log.isTraceEnabled) {
             log.trace("Found route: $route")
         }
@@ -53,6 +55,14 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, CurrencyPr
                 if (log.isTraceEnabled) {
                     log.trace("Cross: $pairRate")
                 }
+                if (forwardRoute) {
+                    val bidPrice = pairRate.bid
+                    rate = rate.multiply(bidPrice)
+                } else {
+                    val askPrice = pairRate.ask
+                    val price = BigDecimal.ONE.divide(askPrice, 30, RoundingMode.HALF_EVEN)
+                    rate = rate.multiply(price)
+                }
             }
         }
 
@@ -63,7 +73,7 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, CurrencyPr
         return multiply
     }
 
-    private fun matchPair(provider: CurrencyProvider, lookupPair: String): PairRate {
+    private fun matchPair(provider: AnyCurrencyProvider, lookupPair: String): PairRate {
         for (rate in provider.getRates().values) {
             if (lookupPair == rate.baseAsset + rate.quoteAsset || lookupPair == rate.quoteAsset + rate.baseAsset) {
                 return rate

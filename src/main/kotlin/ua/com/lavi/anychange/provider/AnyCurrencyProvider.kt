@@ -2,11 +2,11 @@ package ua.com.lavi.anychange.provider
 
 import ua.com.lavi.anychange.model.PairRate
 
-interface CurrencyProvider {
+interface AnyCurrencyProvider {
 
     fun getRates(): Map<String, PairRate>
 
-    fun providerKey(): String
+    fun key(): String
 
     fun getPair(pair: String): PairRate?
 

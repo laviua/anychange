@@ -1,10 +1,10 @@
 package stub
 
 import ua.com.lavi.anychange.model.PairRate
-import ua.com.lavi.anychange.provider.CurrencyProvider
+import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
 
-class USDTUSDCurrencyProvider : CurrencyProvider {
+class StaticCurrencyProvider : AnyCurrencyProvider {
 
     private val pairs = hashMapOf<String, PairRate>()
 
@@ -16,8 +16,8 @@ class USDTUSDCurrencyProvider : CurrencyProvider {
         return pairs[pair]
     }
 
-    override fun providerKey(): String {
-        return "usdtusd"
+    override fun key(): String {
+        return "static"
     }
 
     override fun getRates(): Map<String, PairRate> {
