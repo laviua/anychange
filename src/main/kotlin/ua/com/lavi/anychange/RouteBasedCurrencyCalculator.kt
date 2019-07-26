@@ -7,6 +7,7 @@ import ua.com.lavi.anychange.model.CurrencyRoute
 import ua.com.lavi.anychange.model.PairRate
 import ua.com.lavi.anychange.provider.CurrencyProvider
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class RouteBasedCurrencyCalculator(private val providers: Map<String, CurrencyProvider>,
                                    private val routes: List<CurrencyRoute>) : CurrencyCalculator {
@@ -16,46 +17,55 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, CurrencyPr
     override fun rate(amount: BigDecimal, fromCurrency: String, toCurrency: String): BigDecimal {
         val requestedPair = fromCurrency + toCurrency
         if (log.isTraceEnabled) {
-            log.trace("Exchange: $fromCurrency > $toCurrency")
+            log.trace("Exchange: $amount $fromCurrency > $toCurrency")
         }
         val route = matchRoute(fromCurrency, toCurrency)
-
+        if (log.isTraceEnabled) {
+            log.trace("Found route: $route")
+        }
         // when route has been found, we can go step by step by direction pairs
-
         var rate = BigDecimal.ONE
 
         for (direction in route.directions) {
+
             val provider = providers[direction.provider] ?: error("Provider not found")
 
-            val pairRate = getRate(provider, direction.pair)
+            val pairRate = matchPair(provider, direction.pair)
+            // direct
             if (pairRate.pair() == requestedPair) {
-                val price = pairRate.ask
+                val askPrice = pairRate.ask
+                val price = BigDecimal.ONE.divide(askPrice, 30, RoundingMode.HALF_EVEN)
                 if (log.isTraceEnabled) {
-                    log.trace("Direction: ${direction.pair}. Ask price: $price. Result: $rate")
+                    log.trace("Direct: ${direction.pair}. Ask price: $askPrice")
                 }
 
                 rate = rate.multiply(price)
-            } else {
-                val price = pairRate.bid
-                rate = rate.multiply(price)
+            }
+
+            // direct reversed
+            else if (pairRate.reversedPair() == requestedPair) {
+                val bidPrice = pairRate.bid
+                rate = rate.multiply(bidPrice)
                 if (log.isTraceEnabled) {
-                    log.trace("Direction: ${direction.pair}. Bid price: $price. Result: $rate")
+                    log.trace("Direct: ${direction.pair}. Bid price: $bidPrice")
+                }
+            } else {
+                if (log.isTraceEnabled) {
+                    log.trace("Cross: $pairRate")
                 }
             }
         }
-        return amount.multiply(rate)
+
+        val multiply = amount.multiply(rate)
+        if (log.isTraceEnabled) {
+            log.trace("Result: $multiply")
+        }
+        return multiply
     }
 
-    private fun getRate(provider: CurrencyProvider, lookupPair: String): PairRate {
+    private fun matchPair(provider: CurrencyProvider, lookupPair: String): PairRate {
         for (rate in provider.getRates().values) {
-
-            val baseQuotePair = rate.baseAsset + rate.quoteAsset
-            if (lookupPair == baseQuotePair) {
-                return rate
-            }
-
-            val quoteBasePair = rate.quoteAsset + rate.baseAsset
-            if (lookupPair == quoteBasePair) {
+            if (lookupPair == rate.baseAsset + rate.quoteAsset || lookupPair == rate.quoteAsset + rate.baseAsset) {
                 return rate
             }
         }
@@ -65,15 +75,9 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, CurrencyPr
     private fun matchRoute(fromCurrency: String, toCurrency: String): CurrencyRoute {
         for (route in routes) {
             if (fromCurrency == route.baseAsset && toCurrency == route.quoteAsset) {
-                if (log.isTraceEnabled) {
-                    log.trace("Found route: $route")
-                }
                 return route
             }
             if (fromCurrency == route.quoteAsset && toCurrency == route.baseAsset) {
-                if (log.isTraceEnabled) {
-                    log.trace("Found route: $route")
-                }
                 return route
             }
         }
