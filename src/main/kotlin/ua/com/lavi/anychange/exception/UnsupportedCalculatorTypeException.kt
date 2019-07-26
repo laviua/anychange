@@ -1,3 +1,3 @@
 package ua.com.lavi.anychange.exception
 
-class UnsupportedCalculatorTypeException: RuntimeException()
+class UnsupportedCalculatorTypeException : RuntimeException()
