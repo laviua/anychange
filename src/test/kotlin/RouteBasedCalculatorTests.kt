@@ -39,6 +39,42 @@ class RouteBasedCalculatorTests {
     }
 
     @Test
+    fun should_rate_simple_way_with_positive_correlation() {
+
+        // 25.35/25.50
+        val uahusdsimpleRoute = CurrencyRouteBuilder()
+                .addPoints("UAH", "USD")
+                .addDirection("UAHUSD", "privat24", BigDecimal.valueOf(0.2))
+                .build()
+
+        val calculator = AnyCurrencyCalculatorBuilder()
+                .type(CalculatorType.ROUTE_BASED)
+                .addRoute(uahusdsimpleRoute)
+                .addProvider(privat24Provider)
+                .build()
+
+        Assert.assertTrue(BigDecimal.valueOf(25.4007).compareTo(calculator.rate(BigDecimal.valueOf(1), "USD", "UAH")) == 0)
+    }
+
+    @Test
+    fun should_rate_simple_way_with_negative_correlation() {
+
+        // 25.35/25.50
+        val uahusdsimpleRoute = CurrencyRouteBuilder()
+                .addPoints("UAH", "USD")
+                .addDirection("UAHUSD", "privat24", BigDecimal.valueOf(0.2).negate())
+                .build()
+
+        val calculator = AnyCurrencyCalculatorBuilder()
+                .type(CalculatorType.ROUTE_BASED)
+                .addRoute(uahusdsimpleRoute)
+                .addProvider(privat24Provider)
+                .build()
+
+        Assert.assertTrue(BigDecimal.valueOf(25.2993).compareTo(calculator.rate(BigDecimal.valueOf(1), "USD", "UAH")) == 0)
+    }
+
+    @Test
     fun should_cross_routes() {
 
         val btcuahRoute = CurrencyRouteBuilder()

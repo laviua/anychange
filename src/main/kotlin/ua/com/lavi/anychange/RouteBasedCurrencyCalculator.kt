@@ -14,6 +14,8 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
 
     private val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
+    private fun BigDecimal.percentOf(value: BigDecimal): BigDecimal = this.multiply(value).divide(BigDecimal.valueOf(100)).stripTrailingZeros()
+
     override fun rate(amount: BigDecimal, fromCurrency: String, toCurrency: String): BigDecimal {
         val requestedPair = fromCurrency + toCurrency
         if (log.isTraceEnabled) {
@@ -64,6 +66,7 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
                     rate = rate.multiply(price)
                 }
             }
+            rate = rate.plus(direction.correlationPercent.percentOf(rate))
         }
 
         val multiply = amount.multiply(rate)

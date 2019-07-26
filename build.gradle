@@ -69,7 +69,7 @@ if (IS_UPLOADING) {
     gradle.taskGraph.whenReady { taskGraph ->
         taskGraph.getAllTasks().find {
             it.path == ":generatePomFileForMavenPublication"
-        }.doFirst {
+        }.doLast {
             file("build/publications/maven/pom-default.xml").delete()
             println 'Overriding pom-file to make sure we can sync to maven central!'
             pom {

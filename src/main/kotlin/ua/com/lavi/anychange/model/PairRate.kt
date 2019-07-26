@@ -6,6 +6,7 @@ data class PairRate(val baseAsset: String,
                     val quoteAsset: String,
                     val bid: BigDecimal,
                     val ask: BigDecimal) {
+
     fun pair(): String {
         return baseAsset + quoteAsset
     }
