@@ -86,7 +86,7 @@ class RouteBasedCalculatorTests {
 
         val calculator = AnyCurrencyCalculatorBuilder()
                 .type(CalculatorType.ROUTE_BASED)
-                .providers(listOf(usdtusdProvider, privat24Provider, binanceProvider))
+                .addProviders(listOf(usdtusdProvider, privat24Provider, binanceProvider))
                 .addRoute(btcuahRoute)
                 .build()
 

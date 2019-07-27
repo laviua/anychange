@@ -39,15 +39,22 @@ class AnyCurrencyCalculatorBuilder {
         return this
     }
 
-    fun providers(providers: List<AnyCurrencyProvider>): AnyCurrencyCalculatorBuilder {
+    fun addRoute(route: CurrencyRoute): AnyCurrencyCalculatorBuilder {
+        this.routes.add(route)
+        return this
+    }
+
+    fun addProviders(providers: Collection<AnyCurrencyProvider>): AnyCurrencyCalculatorBuilder {
         for (provider in providers) {
             this.providers[provider.key()] = provider
         }
         return this
     }
 
-    fun addRoute(route: CurrencyRoute): AnyCurrencyCalculatorBuilder {
-        this.routes.add(route)
+    fun addRoutes(routes: Collection<CurrencyRoute>) : AnyCurrencyCalculatorBuilder {
+        for (route in routes) {
+            this.routes.add(route)
+        }
         return this
     }
 
