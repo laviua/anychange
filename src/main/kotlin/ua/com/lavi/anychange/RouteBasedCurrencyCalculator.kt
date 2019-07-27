@@ -11,10 +11,26 @@ import java.math.RoundingMode
 
 class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrencyProvider>,
                                    private val routes: List<CurrencyRoute>) : AnyCurrencyCalculator {
-
     private val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     private fun BigDecimal.percentOf(value: BigDecimal): BigDecimal = this.multiply(value).divide(BigDecimal.valueOf(100)).stripTrailingZeros()
+
+    override fun rates(): List<CurrencyPairRate> {
+        val result = arrayListOf<CurrencyPairRate>()
+        for (route in routes) {
+            var bidRate = BigDecimal.ONE
+            var askRate = BigDecimal.ONE
+            for (direction in route.directions) {
+                val pairRate = matchPair(direction.provider, direction.pair)
+                bidRate = bidRate.multiply(pairRate.bid)
+                askRate = askRate.multiply(pairRate.ask)
+                bidRate = bidRate.plus(direction.correlationPercent.percentOf(bidRate))
+                askRate = askRate.plus(direction.correlationPercent.percentOf(askRate))
+            }
+            result.add(CurrencyPairRate(route.baseAsset, route.quoteAsset, bid = bidRate, ask = askRate))
+        }
+        return result
+    }
 
     override fun rate(amount: BigDecimal, fromCurrency: String, toCurrency: String): BigDecimal {
         val requestedPair = fromCurrency + toCurrency
@@ -30,13 +46,11 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
         // when route has been found, we can go step by step by direction pairs
         var rate = BigDecimal.ONE
 
-        for (direction in route.directionCurrencies) {
+        for (direction in route.directions) {
+            val pairRate = matchPair(direction.provider, direction.pair)
 
-            val provider = providers[direction.provider] ?: error("Provider not found")
-
-            val pairRate = matchPair(provider, direction.pair)
             // direct
-            if (pairRate.pair() == requestedPair) {
+            if (pairRate.pair == requestedPair) {
                 val askPrice = pairRate.ask
                 val price = BigDecimal.ONE.divide(askPrice, 30, RoundingMode.HALF_EVEN)
                 if (log.isTraceEnabled) {
@@ -76,7 +90,9 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
         return multiply
     }
 
-    private fun matchPair(provider: AnyCurrencyProvider, lookupPair: String): CurrencyPairRate {
+    private fun matchPair(providerKey: String, lookupPair: String): CurrencyPairRate {
+        val provider = providers[providerKey] ?: error("Provider $providerKey is not found")
+
         for (rate in provider.getRates().values) {
             if (lookupPair == rate.baseAsset + rate.quoteAsset || lookupPair == rate.quoteAsset + rate.baseAsset) {
                 return rate

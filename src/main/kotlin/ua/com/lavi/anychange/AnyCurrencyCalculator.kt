@@ -1,5 +1,6 @@
 package ua.com.lavi.anychange
 
+import ua.com.lavi.anychange.model.CurrencyPairRate
 import java.math.BigDecimal
 
 interface AnyCurrencyCalculator {
@@ -9,5 +10,10 @@ interface AnyCurrencyCalculator {
      */
 
     fun rate(amount: BigDecimal, fromCurrency: String, toCurrency: String): BigDecimal
+
+    /**
+     * Get all supported currency rates
+     */
+    fun rates(): List<CurrencyPairRate>
 
 }

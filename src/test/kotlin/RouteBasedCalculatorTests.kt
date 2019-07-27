@@ -95,4 +95,41 @@ class RouteBasedCalculatorTests {
         Assert.assertTrue(BigDecimal.valueOf(0.00000385).compareTo(calculator.rate(BigDecimal.valueOf(1), "UAH", "BTC").setScale(8, RoundingMode.HALF_EVEN)) == 0)
         Assert.assertTrue(BigDecimal.valueOf(0.0000385).compareTo(calculator.rate(BigDecimal.valueOf(10), "UAH", "BTC").setScale(8, RoundingMode.HALF_EVEN)) == 0)
     }
+
+    @Test
+    fun should_get_all_rates() {
+
+        val btcuahRoute = CurrencyRouteBuilder()
+                .addPoints("BTC", "UAH")
+                .addDirection("BTCUSDT", "binance", BigDecimal.valueOf(0.2))
+                .addDirection("USDTUSD", "static")
+                .addDirection("UAHUSD", "privat24")
+                .build()
+
+        val uahusdsimpleRoute = CurrencyRouteBuilder()
+                .addPoints("UAH", "USD")
+                .addDirection("UAHUSD", "privat24")
+                .build()
+
+        val calculator = AnyCurrencyCalculatorBuilder()
+                .type(CurrencyCalculatorType.ROUTE_BASED)
+                .addProviders(listOf(usdtusdProvider, privat24Provider, binanceProvider))
+                .addRoute(uahusdsimpleRoute)
+                .addRoute(btcuahRoute)
+                .build()
+
+        val rates = calculator.rates()
+        Assert.assertTrue(2 == rates.size)
+
+        Assert.assertTrue("UAH" == rates[0].baseAsset)
+        Assert.assertTrue("USD" == rates[0].quoteAsset)
+        Assert.assertTrue(BigDecimal.valueOf(25.35).compareTo(rates[0].bid) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(25.5).compareTo(rates[0].ask) == 0)
+
+        Assert.assertTrue("BTC" == rates[1].baseAsset)
+        Assert.assertTrue("UAH" == rates[1].quoteAsset)
+        Assert.assertTrue(BigDecimal.valueOf(257333.0362398900).compareTo(rates[1].bid) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(260227.16940780).compareTo(rates[1].ask) == 0)
+
+    }
 }
