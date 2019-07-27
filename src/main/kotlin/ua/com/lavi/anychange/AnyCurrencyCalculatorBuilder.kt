@@ -4,7 +4,7 @@ import ua.com.lavi.anychange.exception.EmptyProvidersException
 import ua.com.lavi.anychange.exception.EmptyRoutesException
 import ua.com.lavi.anychange.exception.UnknownCalculatorTypeException
 import ua.com.lavi.anychange.exception.UnsupportedCalculatorTypeException
-import ua.com.lavi.anychange.model.CalculatorType
+import ua.com.lavi.anychange.model.CurrencyCalculatorType
 import ua.com.lavi.anychange.model.CurrencyRoute
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 
@@ -12,7 +12,7 @@ class AnyCurrencyCalculatorBuilder {
 
     private val providers = hashMapOf<String, AnyCurrencyProvider>()
     private val routes = arrayListOf<CurrencyRoute>()
-    private var calculatorType: CalculatorType? = null
+    private var calculatorType: CurrencyCalculatorType? = null
 
     fun build(): RouteBasedCurrencyCalculator {
 
@@ -24,7 +24,7 @@ class AnyCurrencyCalculatorBuilder {
         }
 
         when (calculatorType) {
-            CalculatorType.ROUTE_BASED -> {
+            CurrencyCalculatorType.ROUTE_BASED -> {
                 if (routes.isEmpty()) {
                     throw EmptyRoutesException()
                 }
@@ -58,7 +58,7 @@ class AnyCurrencyCalculatorBuilder {
         return this
     }
 
-    fun type(calculatorType: CalculatorType): AnyCurrencyCalculatorBuilder {
+    fun type(calculatorType: CurrencyCalculatorType): AnyCurrencyCalculatorBuilder {
         this.calculatorType = calculatorType
         return this
     }

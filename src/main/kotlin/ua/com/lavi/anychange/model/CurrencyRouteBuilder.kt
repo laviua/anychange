@@ -8,13 +8,13 @@ class CurrencyRouteBuilder {
     private var baseAsset: String = ""
     private var quoteAsset: String = ""
 
-    private val directions = arrayListOf<RouteDirection>()
+    private val directions = arrayListOf<CurrencyRouteDirection>()
 
     /**
      * Add route direction. Currency calculation will multiply every step
      */
     fun addDirection(pair: String, provider: String): CurrencyRouteBuilder {
-        directions.add(RouteDirection(pair, provider))
+        directions.add(CurrencyRouteDirection(pair, provider))
         return this
     }
 
@@ -22,7 +22,7 @@ class CurrencyRouteBuilder {
      * Add route direction with correlation. It needs when we want to correlate according provider fee. Currency calculation will multiply every step.
      */
     fun addDirection(pair: String, provider: String, correlationPercent: BigDecimal): CurrencyRouteBuilder {
-        directions.add(RouteDirection(pair, provider, correlationPercent))
+        directions.add(CurrencyRouteDirection(pair, provider, correlationPercent))
         return this
     }
 

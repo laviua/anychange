@@ -4,7 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import ua.com.lavi.anychange.exception.UnsupportedConversionException
 import ua.com.lavi.anychange.model.CurrencyRoute
-import ua.com.lavi.anychange.model.PairRate
+import ua.com.lavi.anychange.model.CurrencyPairRate
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -30,7 +30,7 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
         // when route has been found, we can go step by step by direction pairs
         var rate = BigDecimal.ONE
 
-        for (direction in route.directions) {
+        for (direction in route.directionCurrencies) {
 
             val provider = providers[direction.provider] ?: error("Provider not found")
 
@@ -76,7 +76,7 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
         return multiply
     }
 
-    private fun matchPair(provider: AnyCurrencyProvider, lookupPair: String): PairRate {
+    private fun matchPair(provider: AnyCurrencyProvider, lookupPair: String): CurrencyPairRate {
         for (rate in provider.getRates().values) {
             if (lookupPair == rate.baseAsset + rate.quoteAsset || lookupPair == rate.quoteAsset + rate.baseAsset) {
                 return rate

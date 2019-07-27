@@ -1,5 +1,5 @@
 package ua.com.lavi.anychange.model
 
-enum class CalculatorType {
+enum class CurrencyCalculatorType {
     ROUTE_BASED
 }

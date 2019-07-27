@@ -4,7 +4,7 @@ import stub.FakeBinanceCurrencyProvider
 import stub.FakePrivat24CurrencyProvider
 import stub.StaticCurrencyProvider
 import ua.com.lavi.anychange.AnyCurrencyCalculatorBuilder
-import ua.com.lavi.anychange.model.CalculatorType
+import ua.com.lavi.anychange.model.CurrencyCalculatorType
 import ua.com.lavi.anychange.model.CurrencyRouteBuilder
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -25,7 +25,7 @@ class RouteBasedCalculatorTests {
                 .build()
 
         val calculator = AnyCurrencyCalculatorBuilder()
-                .type(CalculatorType.ROUTE_BASED)
+                .type(CurrencyCalculatorType.ROUTE_BASED)
                 .addRoute(uahusdsimpleRoute)
                 .addProvider(privat24Provider)
                 .build()
@@ -48,7 +48,7 @@ class RouteBasedCalculatorTests {
                 .build()
 
         val calculator = AnyCurrencyCalculatorBuilder()
-                .type(CalculatorType.ROUTE_BASED)
+                .type(CurrencyCalculatorType.ROUTE_BASED)
                 .addRoute(uahusdsimpleRoute)
                 .addProvider(privat24Provider)
                 .build()
@@ -66,7 +66,7 @@ class RouteBasedCalculatorTests {
                 .build()
 
         val calculator = AnyCurrencyCalculatorBuilder()
-                .type(CalculatorType.ROUTE_BASED)
+                .type(CurrencyCalculatorType.ROUTE_BASED)
                 .addRoute(uahusdsimpleRoute)
                 .addProvider(privat24Provider)
                 .build()
@@ -85,7 +85,7 @@ class RouteBasedCalculatorTests {
                 .build()
 
         val calculator = AnyCurrencyCalculatorBuilder()
-                .type(CalculatorType.ROUTE_BASED)
+                .type(CurrencyCalculatorType.ROUTE_BASED)
                 .addProviders(listOf(usdtusdProvider, privat24Provider, binanceProvider))
                 .addRoute(btcuahRoute)
                 .build()

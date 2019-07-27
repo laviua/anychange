@@ -1,18 +1,18 @@
 package stub
 
-import ua.com.lavi.anychange.model.PairRate
+import ua.com.lavi.anychange.model.CurrencyPairRate
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
 
 class StaticCurrencyProvider : AnyCurrencyProvider {
 
-    private val pairs = hashMapOf<String, PairRate>()
+    private val pairs = hashMapOf<String, CurrencyPairRate>()
 
     init {
-        pairs["USDTUSD"] = PairRate("USDT", "USD", BigDecimal.valueOf(1.005), BigDecimal.valueOf(1.01))
+        pairs["USDTUSD"] = CurrencyPairRate("USDT", "USD", BigDecimal.valueOf(1.005), BigDecimal.valueOf(1.01))
     }
 
-    override fun getPair(pair: String): PairRate? {
+    override fun getRate(pair: String): CurrencyPairRate? {
         return pairs[pair]
     }
 
@@ -20,7 +20,7 @@ class StaticCurrencyProvider : AnyCurrencyProvider {
         return "static"
     }
 
-    override fun getRates(): Map<String, PairRate> {
+    override fun getRates(): Map<String, CurrencyPairRate> {
         return pairs
     }
 }
