@@ -77,7 +77,7 @@ if (IS_UPLOADING) {
                 project {
                     name "$project.name"
                     artifactId ARTIFACT_ID
-                    packaging project.name == 'compiler' ? 'jar' : 'aar'
+                    packaging 'jar'
                     description DESCRIPTION
                     url SITE_URL
                     version VERSION_NAME
