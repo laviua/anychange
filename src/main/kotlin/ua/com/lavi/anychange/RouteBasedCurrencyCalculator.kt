@@ -10,7 +10,9 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrencyProvider>,
-                                   private val routes: Collection<CurrencyRoute>) : AnyCurrencyCalculator {
+                                   private val routes: Collection<CurrencyRoute>,
+                                   private val roundingMode: RoundingMode = RoundingMode.HALF_EVEN,
+                                   private val roundingScale: Int = 30) : AnyCurrencyCalculator {
     private val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     private fun BigDecimal.percentOf(value: BigDecimal): BigDecimal = this.multiply(value).divide(BigDecimal.valueOf(100)).stripTrailingZeros()
@@ -52,7 +54,7 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
             // direct
             if (pairRate.pair == requestedPair) {
                 val askPrice = pairRate.ask
-                val price = BigDecimal.ONE.divide(askPrice, 30, RoundingMode.HALF_EVEN)
+                val price = BigDecimal.ONE.divide(askPrice, roundingScale, roundingMode)
                 if (log.isTraceEnabled) {
                     log.trace("Direct: ${direction.pair}. Ask price: $askPrice")
                 }
@@ -72,12 +74,12 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
                     log.trace("Cross: $pairRate")
                 }
                 if (forwardRoute) {
-                    val bidPrice = pairRate.bid
-                    rate = rate.multiply(bidPrice)
-                } else {
                     val askPrice = pairRate.ask
                     val price = BigDecimal.ONE.divide(askPrice, 30, RoundingMode.HALF_EVEN)
                     rate = rate.multiply(price)
+                } else {
+                    val bidPrice = pairRate.bid
+                    rate = rate.multiply(bidPrice)
                 }
             }
             rate = rate.plus(direction.correlationPercent.percentOf(rate))

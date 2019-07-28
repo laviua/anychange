@@ -78,7 +78,7 @@ class RouteBasedCalculatorTests {
     fun should_cross_routes() {
 
         val btcuahRoute = CurrencyRouteBuilder()
-                .addPoints("BTC", "UAH")
+                .addPoints("UAH", "BTC")
                 .addDirection("BTCUSDT", "binance")
                 .addDirection("USDTUSD", "static")
                 .addDirection("UAHUSD", "privat24")
