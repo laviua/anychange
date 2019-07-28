@@ -10,7 +10,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrencyProvider>,
-                                   private val routes: List<CurrencyRoute>) : AnyCurrencyCalculator {
+                                   private val routes: Collection<CurrencyRoute>) : AnyCurrencyCalculator {
     private val log: Logger = LoggerFactory.getLogger(this.javaClass)
 
     private fun BigDecimal.percentOf(value: BigDecimal): BigDecimal = this.multiply(value).divide(BigDecimal.valueOf(100)).stripTrailingZeros()
@@ -111,5 +111,13 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
             }
         }
         throw UnsupportedConversionException()
+    }
+
+    fun getRoutes(): Collection<CurrencyRoute> {
+        return routes
+    }
+
+    fun getProviders(): Map<String, AnyCurrencyProvider> {
+        return providers
     }
 }

@@ -11,4 +11,11 @@ data class CurrencyPairRate(val baseAsset: String,
     fun reversedPair(): String {
         return quoteAsset + baseAsset
     }
+
+    fun matches(currency: String): Boolean {
+        if (baseAsset == currency || quoteAsset == currency) {
+            return true
+        }
+        return false
+    }
 }

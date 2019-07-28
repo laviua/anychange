@@ -12,8 +12,9 @@ interface AnyCurrencyCalculator {
     fun rate(amount: BigDecimal, fromCurrency: String, toCurrency: String): BigDecimal
 
     /**
-     * Get all supported currency rates
+     * Get all supported currency rates bid/ask
      */
+
     fun rates(): List<CurrencyPairRate>
 
 }

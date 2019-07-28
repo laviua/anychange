@@ -36,6 +36,9 @@ class CurrencyRouteBuilder {
         return this
     }
 
+    /**
+     * Build calculator
+     */
     fun build(): CurrencyRoute {
         if (baseAsset.isEmpty() || quoteAsset.isEmpty()) {
             throw EmptyAssetException()

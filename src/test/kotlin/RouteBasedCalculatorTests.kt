@@ -100,7 +100,7 @@ class RouteBasedCalculatorTests {
     fun should_get_all_rates() {
 
         val btcuahRoute = CurrencyRouteBuilder()
-                .addPoints("BTC", "UAH")
+                .addPoints("UAH", "BTC")
                 .addDirection("BTCUSDT", "binance", BigDecimal.valueOf(0.2))
                 .addDirection("USDTUSD", "static")
                 .addDirection("UAHUSD", "privat24")
@@ -126,10 +126,13 @@ class RouteBasedCalculatorTests {
         Assert.assertTrue(BigDecimal.valueOf(25.35).compareTo(rates[0].bid) == 0)
         Assert.assertTrue(BigDecimal.valueOf(25.5).compareTo(rates[0].ask) == 0)
 
-        Assert.assertTrue("BTC" == rates[1].baseAsset)
-        Assert.assertTrue("UAH" == rates[1].quoteAsset)
+        Assert.assertTrue("UAH" == rates[1].baseAsset)
+        Assert.assertTrue("BTC" == rates[1].quoteAsset)
         Assert.assertTrue(BigDecimal.valueOf(257333.0362398900).compareTo(rates[1].bid) == 0)
         Assert.assertTrue(BigDecimal.valueOf(260227.16940780).compareTo(rates[1].ask) == 0)
+
+        Assert.assertTrue(rates[1].matches("UAH"))
+        Assert.assertTrue(rates[1].matches("BTC"))
 
     }
 }
