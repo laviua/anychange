@@ -10,6 +10,7 @@ class StaticCurrencyProvider : AnyCurrencyProvider {
 
     init {
         pairs["USDTUSD"] = CurrencyPairRate("USDT", "USD", BigDecimal.valueOf(1.005), BigDecimal.valueOf(1.01))
+        pairs["EURUSD"] = CurrencyPairRate("EUR", "USD", BigDecimal.valueOf(1.3652), BigDecimal.valueOf(1.3655))
     }
 
     override fun getRate(pair: String): CurrencyPairRate? {

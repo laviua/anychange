@@ -1,15 +1,14 @@
 package ua.com.lavi.anychange
 
 import ua.com.lavi.anychange.exception.UnsupportedConversionException
-import ua.com.lavi.anychange.model.AnychangeResult
 import ua.com.lavi.anychange.model.AnychangeSide
 import ua.com.lavi.anychange.model.CurrencyPairRate
 import ua.com.lavi.anychange.model.CurrencyRoute
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
 
-class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrencyProvider>,
-                                   private val routes: Collection<CurrencyRoute>) : AnyCurrencyCalculator {
+class RouteBasedCurrencyCalculator(val providers: Map<String, AnyCurrencyProvider>,
+                                   val routes: Collection<CurrencyRoute>) : AnyCurrencyCalculator {
 
     private fun BigDecimal.percentOf(value: BigDecimal): BigDecimal = this.multiply(value).divide(BigDecimal.valueOf(100)).stripTrailingZeros()
 
@@ -30,24 +29,17 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
         return result
     }
 
-    override fun calculate(amount: BigDecimal, fromCurrency: String, toCurrency: String): AnychangeResult {
-        val rates = rates()
-        val quoted = rates.find { it.matchesPair(fromCurrency + toCurrency) }
-        if (quoted == null) {
-            throw UnsupportedConversionException()
-        } else {
-            return AnychangeResult(toCurrency, amount.multiply(quoted.bid))
-        }
+    override fun rate(symbolPair: String): CurrencyPairRate? {
+        return rates().find { it.matchesPair(symbolPair) }
     }
 
-    override fun exchange(symbolPair: String, side: AnychangeSide, amount: BigDecimal): AnychangeResult {
-        val rates = rates()
-        val quoted = rates.find { it.matchesPair(symbolPair) } ?: throw UnsupportedConversionException()
+    override fun exchange(symbolPair: String, side: AnychangeSide, amount: BigDecimal): BigDecimal {
+        val rate = rate(symbolPair) ?: throw UnsupportedConversionException()
 
         if (side == AnychangeSide.BUY) {
-            return AnychangeResult(quoted.quoteAsset, amount.multiply(quoted.ask))
+            return amount.multiply(rate.ask)
         } else {
-            return AnychangeResult(quoted.quoteAsset, amount.multiply(quoted.bid))
+            return amount.multiply(rate.bid)
         }
     }
 
@@ -62,11 +54,4 @@ class RouteBasedCurrencyCalculator(private val providers: Map<String, AnyCurrenc
         throw UnsupportedConversionException()
     }
 
-    fun getRoutes(): Collection<CurrencyRoute> {
-        return routes
-    }
-
-    fun getProviders(): Map<String, AnyCurrencyProvider> {
-        return providers
-    }
 }
