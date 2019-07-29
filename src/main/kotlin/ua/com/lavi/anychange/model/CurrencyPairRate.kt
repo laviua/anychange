@@ -8,14 +8,7 @@ data class CurrencyPairRate(val baseAsset: String,
                             val ask: BigDecimal,
                             val pair: String = baseAsset + quoteAsset) {
 
-    fun reversedPair(): String {
-        return quoteAsset + baseAsset
-    }
-
-    fun matches(currency: String): Boolean {
-        if (baseAsset == currency || quoteAsset == currency) {
-            return true
-        }
-        return false
+    fun matchesPair(symbolPair: String): Boolean {
+        return pair == symbolPair
     }
 }
