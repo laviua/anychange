@@ -6,6 +6,7 @@ import ua.com.lavi.anychange.model.CurrencyPairRate
 import ua.com.lavi.anychange.model.CurrencyRoute
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class RouteBasedCurrencyCalculator(val providers: Map<String, AnyCurrencyProvider>,
                                    val routes: Collection<CurrencyRoute>) : AnyCurrencyCalculator {
@@ -19,10 +20,18 @@ class RouteBasedCurrencyCalculator(val providers: Map<String, AnyCurrencyProvide
             var askRate = BigDecimal.ONE
             for (direction in route.directions) {
                 val pairRate = matchPair(direction.provider, direction.pair)
-                bidRate = bidRate.multiply(pairRate.bid)
-                askRate = askRate.multiply(pairRate.ask)
-                bidRate = bidRate.plus(direction.correlationPercent.percentOf(bidRate))
-                askRate = askRate.plus(direction.correlationPercent.percentOf(askRate))
+                if (direction.reverse) {
+                    bidRate = bidRate.multiply(BigDecimal.ONE.divide(pairRate.ask, 30, RoundingMode.HALF_EVEN))
+                    askRate = askRate.multiply(BigDecimal.ONE.divide(pairRate.bid, 30, RoundingMode.HALF_EVEN))
+
+                    bidRate = bidRate.plus(direction.correlationPercent.percentOf(bidRate))
+                    askRate = askRate.plus(direction.correlationPercent.percentOf(askRate))
+                } else {
+                    bidRate = bidRate.multiply(pairRate.bid)
+                    askRate = askRate.multiply(pairRate.ask)
+                    bidRate = bidRate.plus(direction.correlationPercent.percentOf(bidRate))
+                    askRate = askRate.plus(direction.correlationPercent.percentOf(askRate))
+                }
             }
             result.add(CurrencyPairRate(route.baseAsset, route.quoteAsset, bid = bidRate, ask = askRate))
         }

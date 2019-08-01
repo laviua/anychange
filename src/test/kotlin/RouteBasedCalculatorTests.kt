@@ -101,8 +101,33 @@ class RouteBasedCalculatorTests {
                 .addProvider(privat24Provider)
                 .build()
 
-        // we buy 10 USD for 255 UAH
+        // we buy 10 USD and give 255 UAH
         Assert.assertTrue(BigDecimal.valueOf(255).compareTo(calculator.exchange("USDUAH", AnychangeSide.BUY, BigDecimal.valueOf(10))) == 0)
+    }
+
+    @Test
+    fun should_make_reverse_buy_exchange() {
+        val ethBtc = CurrencyRouteBuilder()
+                .addPoints("BTC", "ETH")
+                .addDirection("ETHBTC", "binance", true)
+                .build()
+
+        val calculator = AnyCurrencyCalculatorBuilder()
+                .type(CurrencyCalculatorType.ROUTE_BASED)
+                .addRoute(ethBtc)
+                .addProvider(binanceProvider)
+                .build()
+
+        val rate = calculator.rate("BTCETH")!!
+
+        Assert.assertTrue("BTC" == rate.baseAsset)
+        Assert.assertTrue("ETH" == rate.quoteAsset)
+        Assert.assertTrue(BigDecimal("46.670089139870257152191160685117").compareTo(rate.bid) == 0)
+        Assert.assertTrue(BigDecimal("46.674445740956826137689614935823").compareTo(rate.ask) == 0)
+
+        // we buy 1 BTC and give 46.6744.. ETH
+        val exchangeRate = calculator.exchange("BTCETH", AnychangeSide.BUY, BigDecimal.ONE)
+        Assert.assertTrue(BigDecimal("46.674445740956826137689614935823").compareTo(exchangeRate) == 0)
     }
 
     @Test

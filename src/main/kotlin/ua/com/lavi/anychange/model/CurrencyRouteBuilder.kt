@@ -14,7 +14,7 @@ class CurrencyRouteBuilder {
      * Add route direction. Currency calculation will multiply every step
      */
     fun addDirection(pair: String, provider: String): CurrencyRouteBuilder {
-        directions.add(CurrencyRouteDirection(pair, provider))
+        directions.add(CurrencyRouteDirection(pair, provider, BigDecimal.ZERO, false))
         return this
     }
 
@@ -22,7 +22,23 @@ class CurrencyRouteBuilder {
      * Add route direction with correlation. It needs when we want to correlate according provider fee. Currency calculation will multiply every step.
      */
     fun addDirection(pair: String, provider: String, correlationPercent: BigDecimal): CurrencyRouteBuilder {
-        directions.add(CurrencyRouteDirection(pair, provider, correlationPercent))
+        directions.add(CurrencyRouteDirection(pair, provider, correlationPercent, false))
+        return this
+    }
+
+    /**
+     * Add full route direction with correlation and pair exchange direction
+     */
+    fun addDirection(pair: String, provider: String, reverse: Boolean): CurrencyRouteBuilder {
+        directions.add(CurrencyRouteDirection(pair, provider, BigDecimal.ZERO, reverse))
+        return this
+    }
+
+    /**
+     * Add full route direction with correlation and pair exchange direction
+     */
+    fun addDirection(pair: String, provider: String, correlationPercent: BigDecimal, reverse: Boolean): CurrencyRouteBuilder {
+        directions.add(CurrencyRouteDirection(pair, provider, correlationPercent, reverse))
         return this
     }
 

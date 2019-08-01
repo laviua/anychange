@@ -4,4 +4,5 @@ import java.math.BigDecimal
 
 data class CurrencyRouteDirection(val pair: String,
                                   val provider: String,
-                                  val correlationPercent: BigDecimal = BigDecimal.ZERO)
+                                  val correlationPercent: BigDecimal,
+                                  val reverse: Boolean)
