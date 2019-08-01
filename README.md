@@ -1,4 +1,6 @@
 # AnyChange
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0) [![Maven Central](https://img.shields.io/maven-central/v/ua.com.lavi/anychange.svg?style=plastic)]() [![Code Climate](https://codeclimate.com/github/laviua/anychange/badges/gpa.svg)](https://codeclimate.com/github/laviua/anychange)
+
 This library gives an ability to make cross converting from one currency to another according to bid/ask rates with the different rates provider.
 
 Motivation:
