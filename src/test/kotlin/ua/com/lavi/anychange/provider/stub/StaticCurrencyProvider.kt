@@ -1,4 +1,4 @@
-package stub
+package ua.com.lavi.anychange.provider.stub
 
 import ua.com.lavi.anychange.model.CurrencyPairRate
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider

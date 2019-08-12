@@ -1,6 +1,8 @@
-package ua.com.lavi.anychange.model
+package ua.com.lavi.anychange
 
 import ua.com.lavi.anychange.exception.EmptyAssetException
+import ua.com.lavi.anychange.model.CurrencyRoute
+import ua.com.lavi.anychange.model.CurrencyRouteDirection
 import java.math.BigDecimal
 
 class CurrencyRouteBuilder {

@@ -1,5 +1,5 @@
 package ua.com.lavi.anychange.model
 
-enum class AnychangeSide {
+enum class ExchangeSide {
     BUY, SELL
 }

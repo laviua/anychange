@@ -1,13 +1,13 @@
 import org.junit.Assert
 import org.junit.Test
-import stub.FakeBinanceCurrencyProvider
-import stub.FakePrivat24CurrencyProvider
-import stub.StaticCurrencyProvider
+import ua.com.lavi.anychange.provider.stub.FakePrivat24CurrencyProvider
+import ua.com.lavi.anychange.provider.stub.StaticCurrencyProvider
 import ua.com.lavi.anychange.AnyCurrencyCalculatorBuilder
 import ua.com.lavi.anychange.exception.UnsupportedConversionException
-import ua.com.lavi.anychange.model.AnychangeSide
+import ua.com.lavi.anychange.model.ExchangeSide
 import ua.com.lavi.anychange.model.CurrencyCalculatorType
-import ua.com.lavi.anychange.model.CurrencyRouteBuilder
+import ua.com.lavi.anychange.CurrencyRouteBuilder
+import ua.com.lavi.anychange.provider.stub.FakeBinanceCurrencyProvider
 import java.math.BigDecimal
 
 class RouteBasedCalculatorTests {
@@ -65,10 +65,10 @@ class RouteBasedCalculatorTests {
                 .build()
 
         // we buy 1 EUR for 1.3655 USD
-        Assert.assertTrue(BigDecimal.valueOf(1.3655).compareTo(calculator.exchange("EURUSD", AnychangeSide.BUY, BigDecimal.valueOf(1))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(1.3655).compareTo(calculator.exchange("EURUSD", ExchangeSide.BUY, BigDecimal.valueOf(1))) == 0)
 
         // we sell 1 EUR and got 1.3652 USD
-        Assert.assertTrue(BigDecimal.valueOf(1.3652).compareTo(calculator.exchange("EURUSD", AnychangeSide.SELL, BigDecimal.valueOf(1))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(1.3652).compareTo(calculator.exchange("EURUSD", ExchangeSide.SELL, BigDecimal.valueOf(1))) == 0)
     }
 
     @Test
@@ -85,7 +85,7 @@ class RouteBasedCalculatorTests {
                 .build()
 
         // we sell 100 USD and got 2535 UAH
-        Assert.assertTrue(BigDecimal.valueOf(2535).compareTo(calculator.exchange("USDUAH", AnychangeSide.SELL, BigDecimal.valueOf(100))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(2535).compareTo(calculator.exchange("USDUAH", ExchangeSide.SELL, BigDecimal.valueOf(100))) == 0)
     }
 
     @Test
@@ -102,7 +102,7 @@ class RouteBasedCalculatorTests {
                 .build()
 
         // we buy 10 USD and give 255 UAH
-        Assert.assertTrue(BigDecimal.valueOf(255).compareTo(calculator.exchange("USDUAH", AnychangeSide.BUY, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(255).compareTo(calculator.exchange("USDUAH", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
     }
 
     @Test
@@ -126,7 +126,7 @@ class RouteBasedCalculatorTests {
         Assert.assertTrue(BigDecimal("46.674445740956826137689614935823").compareTo(rate.ask) == 0)
 
         // we buy 1 BTC and give 46.6744.. ETH
-        val exchangeRate = calculator.exchange("BTCETH", AnychangeSide.BUY, BigDecimal.ONE)
+        val exchangeRate = calculator.exchange("BTCETH", ExchangeSide.BUY, BigDecimal.ONE)
         Assert.assertTrue(BigDecimal("46.674445740956826137689614935823").compareTo(exchangeRate) == 0)
     }
 
@@ -146,8 +146,8 @@ class RouteBasedCalculatorTests {
                 .addRoute(btcuahRoute)
                 .build()
 
-        Assert.assertTrue(BigDecimal.valueOf(259707.75390).compareTo(calculator.exchange("BTCUAH", AnychangeSide.BUY, BigDecimal.valueOf(1))) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(256819.3974450).compareTo(calculator.exchange("BTCUAH", AnychangeSide.SELL, BigDecimal.valueOf(1))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(259707.75390).compareTo(calculator.exchange("BTCUAH", ExchangeSide.BUY, BigDecimal.valueOf(1))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(256819.3974450).compareTo(calculator.exchange("BTCUAH", ExchangeSide.SELL, BigDecimal.valueOf(1))) == 0)
     }
 
     @Test
@@ -165,8 +165,8 @@ class RouteBasedCalculatorTests {
                 .addProvider(privat24Provider)
                 .build()
 
-        Assert.assertTrue(BigDecimal.valueOf(255.510).compareTo(calculator.exchange("USDUAH", AnychangeSide.BUY, BigDecimal.valueOf(10))) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(254.0070).compareTo(calculator.exchange("USDUAH", AnychangeSide.SELL, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(255.510).compareTo(calculator.exchange("USDUAH", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(254.0070).compareTo(calculator.exchange("USDUAH", ExchangeSide.SELL, BigDecimal.valueOf(10))) == 0)
     }
 
     @Test
@@ -184,8 +184,8 @@ class RouteBasedCalculatorTests {
                 .addProvider(privat24Provider)
                 .build()
 
-        Assert.assertTrue(BigDecimal.valueOf(254.490).compareTo(calculator.exchange("USDUAH", AnychangeSide.BUY, BigDecimal.valueOf(10))) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(252.9930).compareTo(calculator.exchange("USDUAH", AnychangeSide.SELL, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(254.490).compareTo(calculator.exchange("USDUAH", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(252.9930).compareTo(calculator.exchange("USDUAH", ExchangeSide.SELL, BigDecimal.valueOf(10))) == 0)
     }
 
     @Test(expected = UnsupportedConversionException::class)
@@ -203,6 +203,6 @@ class RouteBasedCalculatorTests {
                 .addProvider(privat24Provider)
                 .build()
 
-        Assert.assertTrue(BigDecimal.valueOf(254.490).compareTo(calculator.exchange("EURUSD", AnychangeSide.BUY, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(254.490).compareTo(calculator.exchange("EURUSD", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
     }
 }

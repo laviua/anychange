@@ -1,4 +1,4 @@
-package stub
+package ua.com.lavi.anychange.provider.stub
 
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import ua.com.lavi.anychange.model.CurrencyPairRate
@@ -9,7 +9,7 @@ class FakeBinanceCurrencyProvider : AnyCurrencyProvider {
     private val pairs = hashMapOf<String, CurrencyPairRate>()
 
     init {
-        pairs["BTCUSDT"] = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(10080.54), BigDecimal.valueOf(10083.78))
+        pairs["BTCUSDT"] = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(11513.98), BigDecimal.valueOf(11516.31))
         pairs["ETHUSDT"] = CurrencyPairRate("ETH", "USDT", BigDecimal.valueOf(221.57), BigDecimal.valueOf(221.65))
         pairs["ETHBTC"] = CurrencyPairRate("ETH", "BTC", BigDecimal.valueOf(0.02142500), BigDecimal.valueOf(0.02142700))
     }
