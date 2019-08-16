@@ -4,11 +4,14 @@ import ua.com.lavi.anychange.exception.EmptyAssetException
 import ua.com.lavi.anychange.model.CurrencyRoute
 import ua.com.lavi.anychange.model.CurrencyRouteDirection
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class CurrencyRouteBuilder {
 
     private var baseAsset: String = ""
     private var quoteAsset: String = ""
+    private var scale: Int = 30
+    private var roundingMode: RoundingMode = RoundingMode.HALF_EVEN
 
     private val directions = arrayListOf<CurrencyRouteDirection>()
 
@@ -55,12 +58,28 @@ class CurrencyRouteBuilder {
     }
 
     /**
+     * Set scale for ask/bid rates
+     */
+    fun scale(scale: Int): CurrencyRouteBuilder {
+        this.scale = scale
+        return this
+    }
+
+    /**
+     * Set rounding mode for scaling
+     */
+    fun roundingMode(roundingMode: RoundingMode): CurrencyRouteBuilder {
+        this.roundingMode = roundingMode
+        return this
+    }
+
+    /**
      * Build calculator
      */
     fun build(): CurrencyRoute {
         if (baseAsset.isEmpty() || quoteAsset.isEmpty()) {
             throw EmptyAssetException()
         }
-        return CurrencyRoute(baseAsset, quoteAsset, directions)
+        return CurrencyRoute(baseAsset = baseAsset, quoteAsset = quoteAsset, directions = directions, scale = scale, roundingMode = roundingMode)
     }
 }

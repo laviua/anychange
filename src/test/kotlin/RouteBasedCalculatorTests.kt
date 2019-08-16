@@ -175,6 +175,7 @@ class RouteBasedCalculatorTests {
         // 25.35/25.50
         val uahusdsimpleRoute = CurrencyRouteBuilder()
                 .addPoints("USD", "UAH")
+                .scale(2)
                 .addDirection("USDUAH", "privat24", BigDecimal.valueOf(0.2).negate())
                 .build()
 
@@ -184,8 +185,8 @@ class RouteBasedCalculatorTests {
                 .addProvider(privat24Provider)
                 .build()
 
-        Assert.assertTrue(BigDecimal.valueOf(254.490).compareTo(calculator.exchange("USDUAH", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(252.9930).compareTo(calculator.exchange("USDUAH", ExchangeSide.SELL, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(254.5).compareTo(calculator.exchange("USDUAH", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(253).compareTo(calculator.exchange("USDUAH", ExchangeSide.SELL, BigDecimal.valueOf(10))) == 0)
     }
 
     @Test(expected = UnsupportedConversionException::class)
@@ -194,6 +195,7 @@ class RouteBasedCalculatorTests {
         // 25.35/25.50
         val uahusdsimpleRoute = CurrencyRouteBuilder()
                 .addPoints("USD", "UAH")
+                .scale(2)
                 .addDirection("USDUAH", "privat24", BigDecimal.valueOf(0.2).negate())
                 .build()
 
@@ -203,6 +205,6 @@ class RouteBasedCalculatorTests {
                 .addProvider(privat24Provider)
                 .build()
 
-        Assert.assertTrue(BigDecimal.valueOf(254.490).compareTo(calculator.exchange("EURUSD", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(254.49).compareTo(calculator.exchange("EURUSD", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
     }
 }
