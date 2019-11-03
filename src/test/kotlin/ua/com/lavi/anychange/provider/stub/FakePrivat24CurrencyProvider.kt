@@ -15,7 +15,7 @@ class FakePrivat24CurrencyProvider : AnyCurrencyProvider {
     }
 
     override fun getRate(pair: String): CurrencyPairRate? {
-      return pairs[pair]
+        return pairs[pair]
     }
 
     override fun getRates(): Map<String, CurrencyPairRate> {
