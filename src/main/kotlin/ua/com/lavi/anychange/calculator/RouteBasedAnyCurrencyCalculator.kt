@@ -1,10 +1,7 @@
 package ua.com.lavi.anychange.calculator
 
 import ua.com.lavi.anychange.exception.UnsupportedConversionException
-import ua.com.lavi.anychange.model.ExchangeSide
-import ua.com.lavi.anychange.model.CurrencyPairRate
-import ua.com.lavi.anychange.model.CurrencyRoute
-import ua.com.lavi.anychange.model.ExchangeRequest
+import ua.com.lavi.anychange.model.*
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
 
@@ -61,7 +58,7 @@ class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrencyProv
         return exchange(exchangeRequest.symbolPair, exchangeRequest.side, exchangeRequest.amount)
     }
 
-    private fun matchPair(providerKey: String, lookupPair: String): CurrencyPairRate {
+    private fun matchPair(providerKey: String, lookupPair: String): ProviderPairRate {
         val provider = providers[providerKey] ?: error("Provider $providerKey is not found")
 
         for (providerRate in provider.getRates().values) {

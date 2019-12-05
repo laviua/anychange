@@ -1,28 +1,28 @@
 package ua.com.lavi.anychange.provider.stub
 
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
-import ua.com.lavi.anychange.model.CurrencyPairRate
+import ua.com.lavi.anychange.model.ProviderPairRate
 import java.math.BigDecimal
 
 class FakeBinanceCurrencyProvider : AnyCurrencyProvider {
 
-    private val pairs = hashMapOf<String, CurrencyPairRate>()
+    private val pairs = hashMapOf<String, ProviderPairRate>()
 
     init {
-        pairs["BTCUSDT"] = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(10080.54), BigDecimal.valueOf(10083.78), 8)
-        pairs["ETHUSDT"] = CurrencyPairRate("ETH", "USDT", BigDecimal.valueOf(221.57), BigDecimal.valueOf(221.65), 8)
-        pairs["ETHBTC"] = CurrencyPairRate("ETH", "BTC", BigDecimal.valueOf(0.02142500), BigDecimal.valueOf(0.02142700), 8)
+        pairs["BTCUSDT"] = ProviderPairRate("BTC", "USDT", BigDecimal.valueOf(10080.54), BigDecimal.valueOf(10083.78))
+        pairs["ETHUSDT"] = ProviderPairRate("ETH", "USDT", BigDecimal.valueOf(221.57), BigDecimal.valueOf(221.65))
+        pairs["ETHBTC"] = ProviderPairRate("ETH", "BTC", BigDecimal.valueOf(0.02142500), BigDecimal.valueOf(0.02142700))
     }
 
     override fun key(): String {
         return "binance"
     }
 
-    override fun getRates(): Map<String, CurrencyPairRate> {
+    override fun getRates(): Map<String, ProviderPairRate> {
         return pairs
     }
 
-    override fun getRate(pair: String): CurrencyPairRate? {
+    override fun getRate(pair: String): ProviderPairRate? {
         return pairs[pair]
     }
 }
