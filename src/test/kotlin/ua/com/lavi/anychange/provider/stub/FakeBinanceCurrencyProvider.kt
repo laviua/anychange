@@ -9,9 +9,9 @@ class FakeBinanceCurrencyProvider : AnyCurrencyProvider {
     private val pairs = hashMapOf<String, CurrencyPairRate>()
 
     init {
-        pairs["BTCUSDT"] = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(10080.54), BigDecimal.valueOf(10083.78))
-        pairs["ETHUSDT"] = CurrencyPairRate("ETH", "USDT", BigDecimal.valueOf(221.57), BigDecimal.valueOf(221.65))
-        pairs["ETHBTC"] = CurrencyPairRate("ETH", "BTC", BigDecimal.valueOf(0.02142500), BigDecimal.valueOf(0.02142700))
+        pairs["BTCUSDT"] = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(10080.54), BigDecimal.valueOf(10083.78), 8)
+        pairs["ETHUSDT"] = CurrencyPairRate("ETH", "USDT", BigDecimal.valueOf(221.57), BigDecimal.valueOf(221.65), 8)
+        pairs["ETHBTC"] = CurrencyPairRate("ETH", "BTC", BigDecimal.valueOf(0.02142500), BigDecimal.valueOf(0.02142700), 8)
     }
 
     override fun key(): String {

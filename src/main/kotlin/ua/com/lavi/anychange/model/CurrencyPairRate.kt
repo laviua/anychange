@@ -7,6 +7,7 @@ data class CurrencyPairRate(val baseAsset: String,
                             val quoteAsset: String,
                             val bid: BigDecimal,
                             val ask: BigDecimal,
+                            val scale: Int,
                             val pair: String = baseAsset + quoteAsset) {
 
     fun matchesPair(symbolPair: String): Boolean {
@@ -19,6 +20,6 @@ data class CurrencyPairRate(val baseAsset: String,
         }
         val bid = bid.minus(fee.multiply(bid).divide(BigDecimal.valueOf(100)))
         val ask = ask.plus(fee.multiply(ask).divide(BigDecimal.valueOf(100)))
-        return CurrencyPairRate(baseAsset, quoteAsset, bid, ask)
+        return CurrencyPairRate(baseAsset, quoteAsset, bid, ask, scale)
     }
 }

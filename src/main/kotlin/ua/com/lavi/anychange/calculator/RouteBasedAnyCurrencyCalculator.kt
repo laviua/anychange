@@ -33,7 +33,12 @@ class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrencyProv
                     askRate = askRate.plus(direction.correlationPercent.percentOf(askRate))
                 }
             }
-            result.add(CurrencyPairRate(route.baseAsset, route.quoteAsset, bid = bidRate.setScale(route.scale, route.roundingMode), ask = askRate.setScale(route.scale, route.roundingMode)))
+            result.add(CurrencyPairRate(
+                    baseAsset = route.baseAsset,
+                    quoteAsset = route.quoteAsset,
+                    bid = bidRate.setScale(route.scale, route.roundingMode),
+                    ask = askRate.setScale(route.scale, route.roundingMode),
+                    scale = route.scale))
         }
         return result
     }

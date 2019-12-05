@@ -9,9 +9,9 @@ class FakePrivat24CurrencyProvider : AnyCurrencyProvider {
     private val pairs = hashMapOf<String, CurrencyPairRate>()
 
     init {
-        pairs["EURUAH"] = CurrencyPairRate("EUR", "UAH", BigDecimal.valueOf(28.20), BigDecimal.valueOf(28.81844))
-        pairs["RUBUAH"] = CurrencyPairRate("RUB", "UAH", BigDecimal.valueOf(0.370), BigDecimal.valueOf(0.41000))
-        pairs["USDUAH"] = CurrencyPairRate("USD", "UAH", BigDecimal.valueOf(25.35), BigDecimal.valueOf(25.50))
+        pairs["EURUAH"] = CurrencyPairRate("EUR", "UAH", BigDecimal.valueOf(28.20), BigDecimal.valueOf(28.81844), 8)
+        pairs["RUBUAH"] = CurrencyPairRate("RUB", "UAH", BigDecimal.valueOf(0.370), BigDecimal.valueOf(0.41000), 8)
+        pairs["USDUAH"] = CurrencyPairRate("USD", "UAH", BigDecimal.valueOf(25.35), BigDecimal.valueOf(25.50), 8)
     }
 
     override fun getRate(pair: String): CurrencyPairRate? {

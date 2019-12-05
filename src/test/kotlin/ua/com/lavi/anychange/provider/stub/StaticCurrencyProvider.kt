@@ -9,8 +9,8 @@ class StaticCurrencyProvider : AnyCurrencyProvider {
     private val pairs = hashMapOf<String, CurrencyPairRate>()
 
     init {
-        pairs["USDTUSD"] = CurrencyPairRate("USDT", "USD", BigDecimal.valueOf(1.005), BigDecimal.valueOf(1.01))
-        pairs["EURUSD"] = CurrencyPairRate("EUR", "USD", BigDecimal.valueOf(1.3652), BigDecimal.valueOf(1.3655))
+        pairs["USDTUSD"] = CurrencyPairRate("USDT", "USD", BigDecimal.valueOf(1.005), BigDecimal.valueOf(1.01), 8)
+        pairs["EURUSD"] = CurrencyPairRate("EUR", "USD", BigDecimal.valueOf(1.3652), BigDecimal.valueOf(1.3655), 8)
     }
 
     override fun getRate(pair: String): CurrencyPairRate? {
