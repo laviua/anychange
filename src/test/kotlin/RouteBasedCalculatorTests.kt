@@ -24,6 +24,7 @@ class RouteBasedCalculatorTests {
                 .addDirection("BTCUSDT", "binance", BigDecimal.valueOf(0.2))
                 .addDirection("USDTUSD", "static")
                 .addDirection("USDUAH", "privat24")
+                .scale(6)
                 .build()
 
         val uahusdsimpleRoute = CurrencyRouteBuilder()
@@ -47,8 +48,8 @@ class RouteBasedCalculatorTests {
 
         Assert.assertTrue("BTC" == rates[1].baseAsset)
         Assert.assertTrue("UAH" == rates[1].quoteAsset)
-        Assert.assertTrue(BigDecimal.valueOf(257333.0362398900).compareTo(rates[1].bid) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(260227.16940780).compareTo(rates[1].ask) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(257333.03624).compareTo(rates[1].bid) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(260227.169408).compareTo(rates[1].ask) == 0)
     }
 
     @Test

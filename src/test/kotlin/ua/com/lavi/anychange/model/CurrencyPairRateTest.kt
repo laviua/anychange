@@ -4,13 +4,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import ua.com.lavi.anychange.exception.InvalidFeeException
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class CurrencyPairRateTest {
 
     @Test
     fun should_apply_fee() {
-        val rate = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(1000), BigDecimal.valueOf(1200), 8)
-        val rateWithFee = rate.withFee(BigDecimal.TEN)
+        val rate = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(1000), BigDecimal.valueOf(1200), 8, RoundingMode.HALF_EVEN)
+        val rateWithFee = rate.applyFee(BigDecimal.TEN)
         assertTrue(rateWithFee.baseAsset == "BTC")
         assertTrue(rateWithFee.quoteAsset == "USDT")
         assertTrue(rateWithFee.bid.compareTo(BigDecimal.valueOf(900)) == 0)
@@ -19,7 +20,7 @@ class CurrencyPairRateTest {
 
     @Test(expected = InvalidFeeException::class)
     fun should_not_apply_fee() {
-        val rate = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(1000), BigDecimal.valueOf(1200), 8)
-        rate.withFee(BigDecimal.TEN.negate())
+        val rate = CurrencyPairRate("BTC", "USDT", BigDecimal.valueOf(1000), BigDecimal.valueOf(1200), 8, RoundingMode.HALF_EVEN)
+        rate.applyFee(BigDecimal.TEN.negate())
     }
 }
