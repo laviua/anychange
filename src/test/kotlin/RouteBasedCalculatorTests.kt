@@ -7,6 +7,7 @@ import ua.com.lavi.anychange.exception.UnsupportedConversionException
 import ua.com.lavi.anychange.model.ExchangeSide
 import ua.com.lavi.anychange.model.CurrencyCalculatorType
 import ua.com.lavi.anychange.CurrencyRouteBuilder
+import ua.com.lavi.anychange.exception.ProviderPairNotFoundException
 import ua.com.lavi.anychange.provider.stub.FakeBinanceCurrencyProvider
 import java.math.BigDecimal
 
@@ -207,5 +208,21 @@ class RouteBasedCalculatorTests {
                 .build()
 
         Assert.assertTrue(BigDecimal.valueOf(254.49).compareTo(calculator.exchange("EURUSD", ExchangeSide.BUY, BigDecimal.valueOf(10))) == 0)
+    }
+
+    @Test(expected = ProviderPairNotFoundException::class)
+    fun should_not_found_pair() {
+        val eurUahRoute = CurrencyRouteBuilder()
+                .addPoints("EUR", "USD")
+                .scale(2)
+                .addDirection("EURUSD", "privat24", BigDecimal.valueOf(0.2).negate())
+                .build()
+
+        val calculator = AnyCurrencyCalculatorBuilder()
+                .type(CurrencyCalculatorType.ROUTE_BASED)
+                .addRoute(eurUahRoute)
+                .addProvider(privat24Provider)
+                .build()
+        calculator.rates()
     }
 }

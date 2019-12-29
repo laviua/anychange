@@ -1,5 +1,7 @@
 package ua.com.lavi.anychange.calculator
 
+import ua.com.lavi.anychange.exception.ProviderNotFoundException
+import ua.com.lavi.anychange.exception.ProviderPairNotFoundException
 import ua.com.lavi.anychange.exception.UnsupportedConversionException
 import ua.com.lavi.anychange.model.*
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
@@ -16,7 +18,7 @@ class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrencyProv
             var bidRate = BigDecimal.ONE
             var askRate = BigDecimal.ONE
             for (direction in route.directions) {
-                val pairRate = matchPair(direction.provider, direction.pair)
+                val pairRate = matchProviderPair(direction.provider, direction.pair)
                 if (direction.reverse) {
                     bidRate = bidRate.multiply(BigDecimal.ONE.divide(pairRate.ask, route.scale, route.roundingMode))
                     askRate = askRate.multiply(BigDecimal.ONE.divide(pairRate.bid, route.scale, route.roundingMode))
@@ -59,14 +61,14 @@ class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrencyProv
         return exchange(exchangeRequest.symbolPair, exchangeRequest.side, exchangeRequest.amount)
     }
 
-    private fun matchPair(providerKey: String, lookupPair: String): ProviderPairRate {
-        val provider = providers[providerKey] ?: error("Provider $providerKey is not found")
+    private fun matchProviderPair(providerKey: String, lookupPair: String): ProviderPairRate {
+        val provider = providers[providerKey] ?: throw ProviderNotFoundException(providerKey)
 
         for (providerRate in provider.getRates().values) {
             if (providerRate.matchesPair(lookupPair)) {
                 return providerRate
             }
         }
-        throw UnsupportedConversionException()
+        throw ProviderPairNotFoundException(providerKey, lookupPair)
     }
 }
