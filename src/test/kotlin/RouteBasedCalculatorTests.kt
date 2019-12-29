@@ -3,7 +3,7 @@ import org.junit.Test
 import ua.com.lavi.anychange.provider.stub.FakePrivat24CurrencyProvider
 import ua.com.lavi.anychange.provider.stub.StaticCurrencyProvider
 import ua.com.lavi.anychange.AnyCurrencyCalculatorBuilder
-import ua.com.lavi.anychange.exception.UnsupportedConversionException
+import ua.com.lavi.anychange.exception.UnsupportedRoutePairException
 import ua.com.lavi.anychange.model.ExchangeSide
 import ua.com.lavi.anychange.model.CurrencyCalculatorType
 import ua.com.lavi.anychange.CurrencyRouteBuilder
@@ -42,15 +42,18 @@ class RouteBasedCalculatorTests {
         val rates = calculator.rates()
         Assert.assertTrue(2 == rates.size)
 
-        Assert.assertTrue("USD" == rates[0].baseAsset)
-        Assert.assertTrue("UAH" == rates[0].quoteAsset)
-        Assert.assertTrue(BigDecimal.valueOf(25.35).compareTo(rates[0].bid) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(25.5).compareTo(rates[0].ask) == 0)
+        val btcuahRate = rates[0]
+        val usdUahRate = rates[1]
 
-        Assert.assertTrue("BTC" == rates[1].baseAsset)
-        Assert.assertTrue("UAH" == rates[1].quoteAsset)
-        Assert.assertTrue(BigDecimal.valueOf(257333.03624).compareTo(rates[1].bid) == 0)
-        Assert.assertTrue(BigDecimal.valueOf(260227.169408).compareTo(rates[1].ask) == 0)
+        Assert.assertTrue("BTC" == btcuahRate.baseAsset)
+        Assert.assertTrue("UAH" == btcuahRate.quoteAsset)
+        Assert.assertTrue(BigDecimal.valueOf(257333.03624).compareTo(btcuahRate.bid) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(260227.169408).compareTo(btcuahRate.ask) == 0)
+
+        Assert.assertTrue("USD" == usdUahRate.baseAsset)
+        Assert.assertTrue("UAH" == usdUahRate.quoteAsset)
+        Assert.assertTrue(BigDecimal.valueOf(25.35).compareTo(usdUahRate.bid) == 0)
+        Assert.assertTrue(BigDecimal.valueOf(25.5).compareTo(usdUahRate.ask) == 0)
     }
 
     @Test
@@ -191,7 +194,7 @@ class RouteBasedCalculatorTests {
         Assert.assertTrue(BigDecimal.valueOf(253).compareTo(calculator.exchange("USDUAH", ExchangeSide.SELL, BigDecimal.valueOf(10))) == 0)
     }
 
-    @Test(expected = UnsupportedConversionException::class)
+    @Test(expected = UnsupportedRoutePairException::class)
     fun should_throw_exception() {
 
         // 25.35/25.50

@@ -12,7 +12,7 @@ import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 class AnyCurrencyCalculatorBuilder {
 
     private val providers = hashMapOf<String, AnyCurrencyProvider>()
-    private val routes = arrayListOf<CurrencyRoute>()
+    private val routes = sortedMapOf<String, CurrencyRoute>()
     private var calculatorType: CurrencyCalculatorType? = null
 
     fun build(): RouteBasedAnyCurrencyCalculator {
@@ -41,7 +41,7 @@ class AnyCurrencyCalculatorBuilder {
     }
 
     fun addRoute(route: CurrencyRoute): AnyCurrencyCalculatorBuilder {
-        this.routes.add(route)
+        this.routes[route.pair] = route
         return this
     }
 
@@ -54,7 +54,7 @@ class AnyCurrencyCalculatorBuilder {
 
     fun addRoutes(routes: Collection<CurrencyRoute>): AnyCurrencyCalculatorBuilder {
         for (route in routes) {
-            this.routes.add(route)
+            this.routes[route.pair] = route
         }
         return this
     }
