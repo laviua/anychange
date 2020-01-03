@@ -4,13 +4,12 @@ import ua.com.lavi.anychange.exception.ProviderNotFoundException
 import ua.com.lavi.anychange.exception.ProviderPairNotFoundException
 import ua.com.lavi.anychange.exception.UnsupportedRoutePairException
 import ua.com.lavi.anychange.model.*
+import ua.com.lavi.anychange.percentOf
 import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
 
-class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrencyProvider>,
-                                      val routes: Map<String, CurrencyRoute>) : AnyCurrencyCalculator {
-
-    private fun BigDecimal.percentOf(value: BigDecimal): BigDecimal = this.multiply(value).divide(BigDecimal.valueOf(100)).stripTrailingZeros()
+open class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrencyProvider>,
+                                           val routes: Map<String, CurrencyRoute>) : AnyCurrencyCalculator {
 
     override fun rates(): List<CurrencyPairRate> {
         val result = arrayListOf<CurrencyPairRate>()
@@ -59,15 +58,12 @@ class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrencyProv
             if (direction.reverse) {
                 bidRate = bidRate.multiply(BigDecimal.ONE.divide(pairRate.ask, route.scale, route.roundingMode))
                 askRate = askRate.multiply(BigDecimal.ONE.divide(pairRate.bid, route.scale, route.roundingMode))
-
-                bidRate = bidRate.plus(direction.correlationPercent.percentOf(bidRate))
-                askRate = askRate.plus(direction.correlationPercent.percentOf(askRate))
             } else {
                 bidRate = bidRate.multiply(pairRate.bid)
                 askRate = askRate.multiply(pairRate.ask)
-                bidRate = bidRate.plus(direction.correlationPercent.percentOf(bidRate))
-                askRate = askRate.plus(direction.correlationPercent.percentOf(askRate))
             }
+            bidRate = bidRate.plus(direction.correlationPercent.percentOf(bidRate))
+            askRate = askRate.plus(direction.correlationPercent.percentOf(askRate))
         }
         val currencyPairRate = CurrencyPairRate(
                 baseAsset = route.baseAsset,

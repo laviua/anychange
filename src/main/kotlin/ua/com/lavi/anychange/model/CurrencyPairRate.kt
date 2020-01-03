@@ -1,5 +1,6 @@
 package ua.com.lavi.anychange.model
 
+import ua.com.lavi.anychange.percentOf
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -20,8 +21,8 @@ data class CurrencyPairRate(val baseAsset: String,
     }
 
     fun applyFee(bidFee: BigDecimal, askFee: BigDecimal): CurrencyPairRate {
-        val bid = bid.minus(bidFee.multiply(bid).divide(BigDecimal.valueOf(100))).setScale(scale, roundingMode).stripTrailingZeros()
-        val ask = ask.plus(askFee.multiply(ask).divide(BigDecimal.valueOf(100))).setScale(scale, roundingMode).stripTrailingZeros()
+        val bid = bid.minus(bidFee.percentOf(bid)).setScale(scale, roundingMode).stripTrailingZeros()
+        val ask = ask.plus(askFee.percentOf(ask)).setScale(scale, roundingMode).stripTrailingZeros()
         return CurrencyPairRate(baseAsset, quoteAsset, bid, ask, scale, roundingMode)
     }
 }
