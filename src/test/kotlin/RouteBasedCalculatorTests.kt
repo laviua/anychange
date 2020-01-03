@@ -123,7 +123,7 @@ class RouteBasedCalculatorTests {
                 .addProvider(binanceProvider)
                 .build()
 
-        val rate = calculator.rate("BTCETH")!!
+        val rate = calculator.rate("BTCETH")
 
         Assert.assertTrue("BTC" == rate.baseAsset)
         Assert.assertTrue("ETH" == rate.quoteAsset)
