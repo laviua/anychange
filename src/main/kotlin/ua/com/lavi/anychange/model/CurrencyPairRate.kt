@@ -1,6 +1,5 @@
 package ua.com.lavi.anychange.model
 
-import ua.com.lavi.anychange.exception.InvalidFeeException
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -17,11 +16,12 @@ data class CurrencyPairRate(val baseAsset: String,
     }
 
     fun applyFee(fee: BigDecimal): CurrencyPairRate {
-        if (fee.compareTo(BigDecimal.ZERO) == 0 || fee.compareTo(BigDecimal.ZERO) == -1) {
-            throw InvalidFeeException()
-        }
-        val bid = bid.minus(fee.multiply(bid).divide(BigDecimal.valueOf(100))).setScale(scale, roundingMode).stripTrailingZeros()
-        val ask = ask.plus(fee.multiply(ask).divide(BigDecimal.valueOf(100))).setScale(scale, roundingMode).stripTrailingZeros()
+        return applyFee(fee, fee)
+    }
+
+    fun applyFee(bidFee: BigDecimal, askFee: BigDecimal): CurrencyPairRate {
+        val bid = bid.minus(bidFee.multiply(bid).divide(BigDecimal.valueOf(100))).setScale(scale, roundingMode).stripTrailingZeros()
+        val ask = ask.plus(askFee.multiply(ask).divide(BigDecimal.valueOf(100))).setScale(scale, roundingMode).stripTrailingZeros()
         return CurrencyPairRate(baseAsset, quoteAsset, bid, ask, scale, roundingMode)
     }
 }
