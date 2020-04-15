@@ -1,5 +1,6 @@
 package ua.com.lavi.anychange
 
+import ua.com.lavi.anychange.calculator.StaticCalculatorDatasource
 import ua.com.lavi.anychange.calculator.RouteBasedAnyCurrencyCalculator
 import ua.com.lavi.anychange.exception.EmptyProvidersException
 import ua.com.lavi.anychange.exception.EmptyRoutesException
@@ -29,7 +30,7 @@ class AnyCurrencyCalculatorBuilder {
                 if (routes.isEmpty()) {
                     throw EmptyRoutesException()
                 }
-                return RouteBasedAnyCurrencyCalculator(providers, routes)
+                return RouteBasedAnyCurrencyCalculator(StaticCalculatorDatasource(providers, routes))
             }
             else -> throw UnsupportedCalculatorTypeException()
         }

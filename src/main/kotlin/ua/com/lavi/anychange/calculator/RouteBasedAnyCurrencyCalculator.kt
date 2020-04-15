@@ -5,22 +5,17 @@ import ua.com.lavi.anychange.exception.ProviderPairNotFoundException
 import ua.com.lavi.anychange.exception.UnsupportedRoutePairException
 import ua.com.lavi.anychange.model.*
 import ua.com.lavi.anychange.percentOf
-import ua.com.lavi.anychange.provider.AnyCurrencyProvider
 import java.math.BigDecimal
 
-open class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrencyProvider>,
-                                           val routes: Map<String, CurrencyRoute>) : AnyCurrencyCalculator {
+open class RouteBasedAnyCurrencyCalculator(private val datasource: CalculatorDatasource) : AnyCurrencyCalculator {
+
 
     override fun rates(): List<CurrencyPairRate> {
-        val result = arrayListOf<CurrencyPairRate>()
-        for (route in routes.values) {
-            result.add(buildRate(route))
-        }
-        return result
+        return datasource.routes().values.map { buildRate(it) }
     }
 
     override fun rate(symbolPair: String): CurrencyPairRate {
-        val route: CurrencyRoute = routes[symbolPair] ?: throw UnsupportedRoutePairException(symbolPair)
+        val route: CurrencyRoute = datasource.routes()[symbolPair] ?: throw UnsupportedRoutePairException(symbolPair)
         val rate = buildRate(route)
         return rate
     }
@@ -40,7 +35,7 @@ open class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrenc
     }
 
     private fun matchProviderPair(providerKey: String, lookupPair: String): ProviderPairRate {
-        val provider = providers[providerKey] ?: throw ProviderNotFoundException(providerKey)
+        val provider = datasource.providers()[providerKey] ?: throw ProviderNotFoundException(providerKey)
 
         for (providerRate in provider.getRates().values) {
             if (providerRate.matchesPair(lookupPair)) {
@@ -50,7 +45,7 @@ open class RouteBasedAnyCurrencyCalculator(val providers: Map<String, AnyCurrenc
         throw ProviderPairNotFoundException(providerKey, lookupPair)
     }
 
-    private fun buildRate(route: CurrencyRoute): CurrencyPairRate {
+    fun buildRate(route: CurrencyRoute): CurrencyPairRate {
         var bidRate = BigDecimal.ONE
         var askRate = BigDecimal.ONE
         for (direction in route.directions) {
